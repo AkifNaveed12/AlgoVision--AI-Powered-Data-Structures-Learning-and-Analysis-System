@@ -245,7 +245,7 @@ Advanced AI Learning System + final polishing
 # Contributors
 
 Muhammad Akif Naveed  
-Arslan Shafi
+Arslan Shafiq
 
 ---
 
