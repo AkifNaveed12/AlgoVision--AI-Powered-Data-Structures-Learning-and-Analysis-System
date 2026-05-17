@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from backend.models.practice_models import SubmitRequest, SubmitResponse
 from backend.services.supabase_service import (
     get_current_user, get_all_problems, get_problem_by_id,
@@ -46,7 +46,7 @@ async def get_problem(problem_id: int):
 
 
 @router.post("/submit", response_model=SubmitResponse)
-async def submit(req: SubmitRequest, current_user=Depends(get_current_user)):
+async def submit(req: SubmitRequest, background_tasks: BackgroundTasks, current_user=Depends(get_current_user)):
     """Submit code for a practice problem. Executes via Judge0 and compares output."""
     problem = get_problem_by_id(req.problem_id)
     if not problem:
@@ -86,16 +86,20 @@ async def submit(req: SubmitRequest, current_user=Depends(get_current_user)):
     except Exception:
         pass
 
-    save_practice_attempt(str(current_user.id), {
-        "problem_id": req.problem_id,
-        "submitted_code": req.submitted_code,
-        "language_id": req.language_id,
-        "status": av_status,
-        "stdout": stdout,
-        "stderr": stderr,
-        "execution_time_ms": exec_time,
-        "memory_usage_kb": mem_kb,
-    })
+    background_tasks.add_task(
+        save_practice_attempt,
+        str(current_user.id),
+        {
+            "problem_id": req.problem_id,
+            "submitted_code": req.submitted_code,
+            "language_id": req.language_id,
+            "status": av_status,
+            "stdout": stdout,
+            "stderr": stderr,
+            "execution_time_ms": exec_time,
+            "memory_usage_kb": mem_kb,
+        }
+    )
 
     return {
         "status": av_status,

@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.post("/signup")
-async def signup(req: SignupRequest):
+def signup(req: SignupRequest):
     """Register a new user via Supabase Auth."""
     try:
         # Using admin.create_user because the backend Supabase client is initialized with the Service Role Key
@@ -40,7 +40,7 @@ async def signup(req: SignupRequest):
 
 
 @router.post("/login", response_model=AuthResponse)
-async def login(req: LoginRequest):
+def login(req: LoginRequest):
     """Authenticate and return Supabase JWT."""
     try:
         res = supabase.auth.sign_in_with_password({"email": req.email, "password": req.password})
@@ -73,7 +73,7 @@ async def login(req: LoginRequest):
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(current_user=Depends(get_current_user)):
+def get_me(current_user=Depends(get_current_user)):
     """Return current user's profile (protected)."""
     profile = get_user_profile(str(current_user.id))
     return {

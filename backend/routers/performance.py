@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post("/save")
-async def save_performance(req: SavePerformanceRequest, current_user=Depends(get_current_user)):
+def save_performance(req: SavePerformanceRequest, current_user=Depends(get_current_user)):
     """Save performance data after a visualization run (protected)."""
     run_data = req.model_dump()
     result = save_algorithm_run(str(current_user.id), run_data)
@@ -17,14 +17,14 @@ async def save_performance(req: SavePerformanceRequest, current_user=Depends(get
 
 
 @router.get("/history")
-async def get_history(current_user=Depends(get_current_user)):
+def get_history(current_user=Depends(get_current_user)):
     """Get all algorithm runs for the current user (protected)."""
     runs = get_algorithm_runs(str(current_user.id))
     return {"runs": runs}
 
 
 @router.get("/compare")
-async def compare(algorithms: str, current_user=Depends(get_current_user)):
+def compare(algorithms: str, current_user=Depends(get_current_user)):
     """
     Compare performance averages across multiple algorithms.
     ?algorithms=array_insert,linkedlist_insert
