@@ -10,6 +10,20 @@ const features = [
     color: 'from-blue-500 to-cyan-500',
   },
   {
+    icon: '🌳',
+    title: 'Trees & Graphs',
+    description: 'BST insert/search/traversal and Graph BFS/DFS with full SVG tree rendering.',
+    path: '/trees-graphs',
+    color: 'from-green-500 to-emerald-500',
+  },
+  {
+    icon: '🔢',
+    title: 'Sorting & Search',
+    description: 'Bubble, Selection, Insertion, Merge, Quick Sort + Binary Search with race mode.',
+    path: '/sorting',
+    color: 'from-yellow-500 to-orange-500',
+  },
+  {
     icon: '💻',
     title: 'In-Browser Compiler',
     description: 'Write and run Python, C++, Java, and more right in your browser.',
@@ -138,7 +152,7 @@ export default function Home() {
             Everything you need to master DSA
           </h2>
           <p className="text-center text-slate-400 mb-12 text-lg">
-            Six integrated tools — one seamless experience
+            Eight integrated tools — one seamless experience
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -178,7 +192,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate-800 text-center">
         <p className="text-slate-600 text-sm">
-          AlgoVision v1.0 — Built by Akif · Arslan · Ruman | Powered by FastAPI, React, Groq & Supabase
+          AlgoVision v3.0 — Arrays · Linked Lists · BST · Graphs · Sorting | Built by Akif · Arslan · Ruman | Powered by FastAPI, React, Groq & Supabase
         </p>
       </footer>
     </div>

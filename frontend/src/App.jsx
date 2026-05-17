@@ -12,6 +12,8 @@ import AITutor from './pages/AITutor'
 import Practice from './pages/Practice'
 import Performance from './pages/Performance'
 import Reports from './pages/Reports'
+import TreesGraphs from './pages/TreesGraphs'
+import SortingSearch from './pages/SortingSearch'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -37,6 +39,8 @@ function AppRoutes() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/visualizer" element={<ProtectedRoute><Visualizer /></ProtectedRoute>} />
+          <Route path="/trees-graphs" element={<ProtectedRoute><TreesGraphs /></ProtectedRoute>} />
+          <Route path="/sorting" element={<ProtectedRoute><SortingSearch /></ProtectedRoute>} />
           <Route path="/compiler" element={<ProtectedRoute><Compiler /></ProtectedRoute>} />
           <Route path="/ai-tutor" element={<ProtectedRoute><AITutor /></ProtectedRoute>} />
           <Route path="/practice" element={<ProtectedRoute><Practice /></ProtectedRoute>} />

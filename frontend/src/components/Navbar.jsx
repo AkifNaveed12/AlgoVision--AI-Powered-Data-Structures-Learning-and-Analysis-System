@@ -4,6 +4,8 @@ import { useState } from 'react'
 
 const navLinks = [
   { path: '/visualizer', label: 'Visualizer', icon: '⚡' },
+  { path: '/trees-graphs', label: 'Trees & Graphs', icon: '🌳' },
+  { path: '/sorting', label: 'Sorting', icon: '🔢' },
   { path: '/compiler', label: 'Compiler', icon: '💻' },
   { path: '/ai-tutor', label: 'AI Tutor', icon: '🤖' },
   { path: '/practice', label: 'Practice', icon: '📚' },
