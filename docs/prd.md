@@ -10,7 +10,7 @@
 
 ## 3. Key Objectives & Success Metrics
 - **Visual Clarity**: Deliver buttery-smooth, step-by-step animations for core data structures.
-- **Practical Application**: Bridge the gap between visual understanding and code implementation through the integrated compiler.
+- **Practical Application**: Bridge the gap between visual understanding and code implementation through the integrated local compiler.
 - **Engagement**: Increase user retention through gamification (Streaks) and progress tracking (PDF Reports).
 
 ---
@@ -28,10 +28,10 @@
 - The system must capture the **current visualization state** (e.g., "Node 5 is comparing with Node 10") and send it as context to the AI.
 - AI responses must be strictly pedagogical, guiding the user rather than just giving the final answer.
 
-### 4.3. Code Practice & Compilation (Judge0)
+### 4.3. Code Practice & Compilation (Python Subprocess)
 - Users must be able to select problems based on difficulty (Easy, Medium, Hard).
 - Integrated Monaco/CodeMirror editor supporting Python (and other future languages).
-- Submissions are evaluated against hidden test cases using the remote Judge0 compiler API.
+- Submissions are evaluated against hidden test cases using the backend's local Python subprocess executor.
 - Execution time, memory footprint, and standard output are returned to the user.
 
 ### 4.4. Analytics & Reporting
@@ -57,8 +57,8 @@
 
 ### 5.3. Security
 - **Row Level Security (RLS)**: Supabase PostgreSQL tables must strictly enforce RLS policies preventing users from fetching or mutating data that does not belong to their `auth.uid()`.
-- **Code Execution**: User-submitted code must be sandboxed via Judge0. No code is executed on the native FastAPI host.
-- **Secret Management**: API keys (Groq, Judge0, Supabase) must be securely injected via `.env` files.
+- **Code Execution**: User-submitted code must be securely executed via a managed Python Subprocess environment directly on the backend server.
+- **Secret Management**: API keys (Groq, Supabase) must be securely injected via `.env` files.
 
 ### 5.4. Usability
 - The UI must be fully responsive, heavily utilizing modern Tailwind CSS design aesthetics (Dark Mode, Glassmorphism, smooth CSS transitions).

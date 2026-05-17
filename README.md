@@ -12,7 +12,7 @@ AlgoVision is an advanced, interactive educational platform designed to make lea
 
 - **Dynamic Visualizer**: Step-by-step animations for Arrays, Linked Lists, Stacks, Queues, Binary Search Trees, AVL Trees, and Graphs.
 - **Context-Aware AI Tutor**: Powered by Groq (Llama 3), the AI understands the exact step of the visualization you are looking at and answers your questions pedagogically.
-- **Integrated Practice Arena**: Test your skills using our built-in code editor (powered by Monaco). Submissions are compiled and run safely against hidden test cases using the remote Judge0 API.
+- **Integrated Practice Arena**: Test your skills using our built-in code editor (powered by Monaco). Submissions are compiled and run safely against hidden test cases using the backend's local Python subprocess executor.
 - **Gamification & Analytics**: Keep your learning streak alive! View detailed metrics on time/memory complexity, compare algorithms via dynamic charts, and download complete PDF Learning Reports.
 
 ---
@@ -22,7 +22,8 @@ AlgoVision is an advanced, interactive educational platform designed to make lea
 - **Frontend**: React (Vite), Tailwind CSS, Chart.js, Monaco Editor.
 - **Backend**: FastAPI (Python), Uvicorn, ReportLab.
 - **Database & Auth**: Supabase (PostgreSQL), Row Level Security (RLS).
-- **External APIs**: Groq (AI), Judge0 (Compilation).
+- **External APIs**: Groq (AI).
+- **Code Execution**: Local Python Subprocess.
 
 ---
 
@@ -32,7 +33,7 @@ AlgoVision is an advanced, interactive educational platform designed to make lea
 - Node.js (v18+)
 - Python (3.10+)
 - Supabase Account
-- Groq API Key & RapidAPI (Judge0) Key
+- Groq API Key
 
 ### 1. Environment Setup
 Create a `.env` file in the root directory:
@@ -40,9 +41,6 @@ Create a `.env` file in the root directory:
 GROQ_API_KEY=your_groq_api_key
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_service_role_key
-JUDGE0_API_URL=https://judge0-ce.p.rapidapi.com
-JUDGE0_API_KEY=your_rapidapi_key
-JUDGE0_HOST=judge0-ce.p.rapidapi.com
 ```
 
 ### 2. Backend Setup
@@ -87,7 +85,7 @@ This project was built collaboratively in iterative phases.
 - **Ruman**
   - *Roles:* Compilation Logic, DevOps, Deployment, V1/V3 Integration.
   - *Contributions:* 
-    - **Version 2**: Spearheaded the integration of Judge0 for remote code compilation. Resolved critical compilation pipeline errors, implemented sorting visualizations, and set up Dockerization, containerization, and CI/CD pipelines.
+    - **Version 2**: Spearheaded the integration of the Python subprocess library for local code compilation. Resolved critical compilation pipeline errors, implemented sorting visualizations, and set up Dockerization, containerization, and CI/CD pipelines.
 
 - **Arslan**
   - *Roles:* V3 Implementations, System Integrations.

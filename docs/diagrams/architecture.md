@@ -9,19 +9,19 @@ The system follows a standard Client-Server Architecture using modern decoupled 
 ```mermaid
 graph TD
     %% Define Nodes
-    User[User / Browser]
-    Frontend[React + Vite Frontend\n(Tailwind, Chart.js)]
-    Backend[FastAPI Backend\n(Python, Uvicorn)]
-    SupabaseDB[(Supabase DB\nPostgreSQL + Auth)]
-    GroqAI[Groq AI API\n(Llama 3)]
-    Judge0[Judge0 API\n(Code Compiler)]
+    User["User / Browser"]
+    Frontend["React + Vite Frontend\n(Tailwind, Chart.js)"]
+    Backend["FastAPI Backend\n(Python, Uvicorn)"]
+    SupabaseDB[("Supabase DB\nPostgreSQL + Auth")]
+    GroqAI["Groq AI API\n(Llama 3)"]
+    Compiler["Python Subprocess\n(Local Code Compiler)"]
 
     %% Define Connections
     User -- "Interacts with UI" --> Frontend
     Frontend -- "REST API Calls\n(Axios)" --> Backend
     Backend -- "User Auth & CRUD\n(supabase-py)" --> SupabaseDB
     Backend -- "Context-Aware Prompts\n(groq)" --> GroqAI
-    Backend -- "Code Submissions\n(HTTPX)" --> Judge0
+    Backend -- "Code Submissions\n(Local Exec)" --> Compiler
 
     %% Add styling classes
     classDef client fill:#3b82f6,stroke:#1e40af,color:#fff;
@@ -33,7 +33,7 @@ graph TD
     class Frontend client;
     class Backend server;
     class GroqAI external;
-    class Judge0 external;
+    class Compiler server;
     class SupabaseDB db;
 ```
 
@@ -43,25 +43,25 @@ This details the specific internal modules within the FastAPI backend and React 
 
 ```mermaid
 graph TD
-    subgraph Frontend [Frontend Architecture (React)]
-        App[App.jsx / Router]
-        Pages[Pages: Visualizer, Practice, Performance, Reports]
-        Context[Global State & Auth Interceptor]
-        VizEngine[Visualization Engine\n(Canvas/DOM)]
-        ChartWrapper[Performance Chart\n(Chart.js Off-Screen Render)]
+    subgraph Frontend ["Frontend Architecture (React)"]
+        App["App.jsx / Router"]
+        Pages["Pages: Visualizer, Practice, Performance, Reports"]
+        Context["Global State & Auth Interceptor"]
+        VizEngine["Visualization Engine\n(Canvas/DOM)"]
+        ChartWrapper["Performance Chart\n(Chart.js Off-Screen Render)"]
         App --> Pages
         Pages --> Context
         Pages --> VizEngine
         Pages --> ChartWrapper
     end
 
-    subgraph Backend [Backend Architecture (FastAPI)]
-        Router[API Routers\n(auth, ai_tutor, practice, report, performance)]
-        Services[Business Logic Services]
-        SupabaseSVC[Supabase Service\n(Data & Streak Engine)]
-        CompilerSVC[Compiler Service\n(Judge0 Comm)]
-        ReportSVC[Report Service\n(ReportLab PDF Generator)]
-        GroqSVC[Groq Service\n(Prompt Construction)]
+    subgraph Backend ["Backend Architecture (FastAPI)"]
+        Router["API Routers\n(auth, ai_tutor, practice, report, performance)"]
+        Services["Business Logic Services"]
+        SupabaseSVC["Supabase Service\n(Data & Streak Engine)"]
+        CompilerSVC["Compiler Service\n(Subprocess Executor)"]
+        ReportSVC["Report Service\n(ReportLab PDF Generator)"]
+        GroqSVC["Groq Service\n(Prompt Construction)"]
         
         Router --> Services
         Services --> SupabaseSVC
@@ -71,5 +71,5 @@ graph TD
     end
 
     Frontend -- "HTTP/JSON" --> Router
-    SupabaseSVC -.-> |"Async/Def ThreadPool"| Database[(PostgreSQL)]
+    SupabaseSVC -.-> |"Async/Def ThreadPool"| Database[("PostgreSQL")]
 ```

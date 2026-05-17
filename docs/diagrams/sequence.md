@@ -2,14 +2,14 @@
 
 ## 1. Practice Problem Submission Sequence
 
-This sequence diagram illustrates the complete flow when a user submits code for a practice problem, including Judge0 compilation and streak updating.
+This sequence diagram illustrates the complete flow when a user submits code for a practice problem, including local compilation and streak updating.
 
 ```mermaid
 sequenceDiagram
     actor User
     participant Frontend as React Frontend
     participant Backend as FastAPI Backend
-    participant Judge0 as Judge0 API
+    participant Compiler as Python Subprocess
     participant Supabase as Supabase DB
 
     User->>Frontend: Clicks "Submit Code"
@@ -19,10 +19,10 @@ sequenceDiagram
     Backend->>Supabase: Fetch Expected Output (problem_id)
     Supabase-->>Backend: Returns expected_output & test cases
     
-    Backend->>Judge0: POST /submissions?wait=true (code, test cases)
-    activate Judge0
-    Judge0-->>Backend: Returns compilation status, stdout, exec_time, memory
-    deactivate Judge0
+    Backend->>Compiler: Execute python code with input (stdin)
+    activate Compiler
+    Compiler-->>Backend: Returns stdout, stderr, execution time, memory
+    deactivate Compiler
     
     Backend->>Backend: Compare stdout with expected_output
     
@@ -77,4 +77,89 @@ sequenceDiagram
     deactivate Backend
     
     Frontend->>User: Triggers automatic PDF file download
+```
+
+## 3. Authentication Flow (Signup & Login)
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend as React Frontend
+    participant Backend as FastAPI Backend
+    participant Auth as Supabase GoTrue Auth
+    participant DB as Supabase PostgreSQL
+
+    User->>Frontend: Submits Signup Form (Email, Password, Name)
+    Frontend->>Backend: POST /auth/signup
+    activate Backend
+    Backend->>Auth: admin.create_user()
+    Auth-->>Backend: Returns user UUID
+    Backend->>DB: UPDATE users SET full_name = name WHERE id = uuid
+    Backend-->>Frontend: Returns success message
+    deactivate Backend
+
+    User->>Frontend: Submits Login Form (Email, Password)
+    Frontend->>Backend: POST /auth/login
+    activate Backend
+    Backend->>Auth: sign_in_with_password()
+    Auth-->>Backend: Returns JWT Access Token
+    Backend->>DB: Fetch user profile data (Streaks)
+    DB-->>Backend: Returns profile data
+    Backend-->>Frontend: Returns JWT Token & Profile Data
+    deactivate Backend
+    
+    Frontend->>Frontend: Stores JWT in LocalStorage
+    Frontend->>User: Redirects to Dashboard
+```
+
+## 4. AI Tutor Query Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend as React Frontend
+    participant Backend as FastAPI Backend
+    participant Groq as Groq AI (Llama 3)
+
+    User->>Frontend: Pauses animation & asks question
+    Frontend->>Frontend: Captures current Data Structure State
+    Frontend->>Backend: POST /ai/query {question, context}
+    
+    activate Backend
+    Backend->>Backend: Constructs prompt combining user question & state context
+    Backend->>Groq: Sends Chat Completion Request
+    activate Groq
+    Groq-->>Backend: Returns AI Pedagogical Response
+    deactivate Groq
+    
+    Backend-->>Frontend: Returns Explanation String
+    deactivate Backend
+    
+    Frontend->>User: Displays response in Tutor Chatbox
+```
+
+## 5. Algorithm Visualization & Performance Logging Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend as Visualization Engine
+    participant Backend as FastAPI Backend
+    participant Supabase as Supabase DB
+
+    User->>Frontend: Configures array size and speed
+    User->>Frontend: Clicks "Sort" (e.g., Quick Sort)
+    
+    activate Frontend
+    Frontend->>Frontend: Computes atomic steps & tracks comparisons
+    Frontend->>User: Plays animated sorting algorithm
+    
+    Frontend->>Backend: POST /performance/save {algorithm, ops, memory, time}
+    deactivate Frontend
+    
+    activate Backend
+    Backend->>Supabase: INSERT INTO algorithm_runs
+    Supabase-->>Backend: Returns Success
+    Backend-->>Frontend: Returns HTTP 200 OK
+    deactivate Backend
 ```
