@@ -12,6 +12,9 @@ CREATE TABLE IF NOT EXISTS public.users (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
     full_name TEXT,
+    current_streak INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
+    last_active_date DATE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

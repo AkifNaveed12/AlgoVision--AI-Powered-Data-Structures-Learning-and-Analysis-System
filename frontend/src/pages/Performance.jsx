@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import api from '../lib/api'
 import { CompareChart, HistoryLineChart } from '../components/Charts/PerformanceChart'
 
@@ -8,6 +8,11 @@ export default function Performance() {
   const [loading, setLoading] = useState(true)
 
   const [compareAlgos, setCompareAlgos] = useState('array_search,linkedlist_search')
+  const [generatingPDF, setGeneratingPDF] = useState(false)
+
+  const historyChartRef = useRef(null)
+  const compareTimeChartRef = useRef(null)
+  const compareMemChartRef = useRef(null)
 
   useEffect(() => {
     fetchHistory()
@@ -39,15 +44,58 @@ export default function Performance() {
     fetchComparison(compareAlgos)
   }
 
+  const handleGeneratePDF = async () => {
+    setGeneratingPDF(true)
+    try {
+      const chart_images = []
+      if (historyChartRef.current) chart_images.push(historyChartRef.current.toBase64Image())
+      if (compareTimeChartRef.current) chart_images.push(compareTimeChartRef.current.toBase64Image())
+      if (compareMemChartRef.current) chart_images.push(compareMemChartRef.current.toBase64Image())
+      
+      const res = await api.post('/report/generate', { chart_images })
+      
+      const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+      const blobRes = await api.get(res.data.download_url, { responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([blobRes.data]))
+      
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `AlgoVision_Report_${res.data.report_id}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.parentNode.removeChild(link)
+    } catch (err) {
+      alert('Failed to generate report: ' + (err.response?.data?.detail || err.message))
+    } finally {
+      setGeneratingPDF(false)
+    }
+  }
+
   if (loading) {
     return <div className="p-8 text-center text-slate-400">Loading performance data...</div>
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold gradient-text">Performance Analytics</h1>
-        <p className="text-slate-400 mt-1">Analyze execution time and memory usage of your algorithm runs.</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold gradient-text">Performance Analytics</h1>
+          <p className="text-slate-400 mt-1">Analyze execution time and memory usage of your algorithm runs.</p>
+        </div>
+        <button 
+          onClick={handleGeneratePDF}
+          disabled={generatingPDF}
+          className="btn-secondary whitespace-nowrap flex items-center gap-2"
+        >
+          {generatingPDF ? (
+            <>
+              <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+              Generating PDF...
+            </>
+          ) : (
+            <>📄 Download PDF Report</>
+          )}
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -71,8 +119,8 @@ export default function Performance() {
 
           {compareData && (
             <div className="space-y-6">
-              <CompareChart data={compareData} metric="avg_time_ms" title="Avg Time (ms)" />
-              <CompareChart data={compareData} metric="avg_memory_kb" title="Avg Memory (KB)" />
+              <CompareChart chartRef={compareTimeChartRef} data={compareData} metric="avg_time_ms" title="Avg Time (ms)" />
+              <CompareChart chartRef={compareMemChartRef} data={compareData} metric="avg_memory_kb" title="Avg Memory (KB)" />
             </div>
           )}
         </div>
@@ -84,7 +132,7 @@ export default function Performance() {
           
           {runs.length > 0 ? (
             <div className="flex-1 min-h-[300px] flex items-center">
-              <HistoryLineChart runs={runs} />
+              <HistoryLineChart chartRef={historyChartRef} runs={runs} />
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center border-2 border-dashed border-slate-700 rounded-lg">

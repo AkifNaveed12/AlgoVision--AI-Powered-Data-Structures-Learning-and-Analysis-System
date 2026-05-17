@@ -57,6 +57,9 @@ async def login(req: LoginRequest):
                 "id": str(user.id),
                 "email": user.email,
                 "full_name": profile.get("full_name"),
+                "current_streak": profile.get("current_streak") or 0,
+                "longest_streak": profile.get("longest_streak") or 0,
+                "last_active_date": profile.get("last_active_date"),
                 "created_at": str(user.created_at) if user.created_at else None,
             },
         }
@@ -77,5 +80,8 @@ async def get_me(current_user=Depends(get_current_user)):
         "id": str(current_user.id),
         "email": current_user.email,
         "full_name": profile.get("full_name"),
+        "current_streak": profile.get("current_streak") or 0,
+        "longest_streak": profile.get("longest_streak") or 0,
+        "last_active_date": profile.get("last_active_date"),
         "created_at": str(current_user.created_at) if current_user.created_at else None,
     }

@@ -51,7 +51,7 @@ const CHART_OPTIONS = {
   }
 }
 
-export function CompareChart({ data, metric, title }) {
+export function CompareChart({ data, metric, title, chartRef }) {
   if (!data) return null
 
   const labels = Object.keys(data)
@@ -73,12 +73,12 @@ export function CompareChart({ data, metric, title }) {
 
   return (
     <div className="h-64 w-full">
-      <Bar options={{ ...CHART_OPTIONS, plugins: { ...CHART_OPTIONS.plugins, title: { display: true, text: title, color: '#f1f5f9' } } }} data={dataset} />
+      <Bar ref={chartRef} options={{ ...CHART_OPTIONS, plugins: { ...CHART_OPTIONS.plugins, title: { display: true, text: title, color: '#f1f5f9' } } }} data={dataset} />
     </div>
   )
 }
 
-export function HistoryLineChart({ runs }) {
+export function HistoryLineChart({ runs, chartRef }) {
   if (!runs || runs.length === 0) return null
   
   // Sort chronological for line chart
@@ -122,7 +122,7 @@ export function HistoryLineChart({ runs }) {
 
   return (
     <div className="h-72 w-full">
-      <Line options={options} data={dataset} />
+      <Line ref={chartRef} options={options} data={dataset} />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 from supabase import create_client, Client
 from fastapi import Header, HTTPException
+from datetime import datetime, timezone, timedelta
 
 from backend.config import settings
 
@@ -88,10 +89,50 @@ def get_problem_by_id(problem_id: int) -> dict:
     return result.data if result.data else None
 
 
+def update_user_streak(user_id: str):
+    """Calculate and update consecutive day streaks for a user."""
+    profile = get_user_profile(user_id)
+    last_active = profile.get("last_active_date")
+    current_streak = profile.get("current_streak") or 0
+    longest_streak = profile.get("longest_streak") or 0
+    
+    today = datetime.now(timezone.utc).date()
+    
+    if not last_active:
+        new_streak = 1
+    else:
+        last_date = datetime.strptime(last_active, "%Y-%m-%d").date()
+        if last_date == today:
+            return profile # already practiced today
+        elif last_date == today - timedelta(days=1):
+            new_streak = current_streak + 1
+        else:
+            new_streak = 1
+            
+    new_longest = max(new_streak, longest_streak)
+    
+    try:
+        result = supabase.table("users").update({
+            "current_streak": new_streak,
+            "longest_streak": new_longest,
+            "last_active_date": today.isoformat()
+        }).eq("id", user_id).execute()
+        return result.data[0] if result.data else profile
+    except Exception:
+        return profile
+
+
 def save_practice_attempt(user_id: str, attempt_data: dict) -> dict:
     """Save a practice submission attempt."""
     payload = {**attempt_data, "user_id": user_id}
     result = supabase.table("practice_attempts").insert(payload).execute()
+    
+    # Update streak on practice submission
+    try:
+        update_user_streak(user_id)
+    except Exception:
+        pass
+        
     return result.data[0] if result.data else {}
 
 

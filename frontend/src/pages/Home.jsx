@@ -122,6 +122,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Streaks Widget */}
+      {user && (
+        <section className="py-8 px-6">
+          <div className="max-w-3xl mx-auto bg-slate-800/60 border border-slate-700 rounded-2xl p-6 flex items-center justify-between shadow-xl">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 rounded-full bg-orange-500/20 flex items-center justify-center text-3xl">
+                🔥
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-1">
+                  {user.current_streak > 0 ? `${user.current_streak} Day Streak!` : "Start your streak today!"}
+                </h3>
+                <p className="text-slate-400 text-sm">
+                  Practice daily to keep your learning streak alive.
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-slate-400 text-sm mb-1">Longest Streak</div>
+              <div className="text-2xl font-bold text-orange-400">{user.longest_streak || 0} days</div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Learning Loop */}
       <section className="py-16 px-6 border-y border-slate-800">
         <div className="max-w-5xl mx-auto">

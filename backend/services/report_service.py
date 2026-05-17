@@ -1,13 +1,14 @@
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, Image
 from reportlab.lib.units import inch
 from io import BytesIO
 from datetime import datetime
+import base64
 
 
-def generate_full_report(user_data: dict, runs: list, attempts: list) -> bytes:
+def generate_full_report(user_data: dict, runs: list, attempts: list, chart_images: list = None) -> bytes:
     """
     Generate a PDF report using ReportLab.
     Returns raw PDF bytes.
@@ -128,6 +129,24 @@ def generate_full_report(user_data: dict, runs: list, attempts: list) -> bytes:
         ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
     ]))
     story.append(ts)
+
+    if chart_images:
+        story.append(Spacer(1, 0.3 * inch))
+        story.append(Paragraph("Performance Charts", styles["Heading2"]))
+        story.append(Spacer(1, 0.1 * inch))
+        for img_str in chart_images:
+            try:
+                if "base64," in img_str:
+                    img_str = img_str.split("base64,")[1]
+                img_data = base64.b64decode(img_str)
+                img_buffer = BytesIO(img_data)
+                
+                # Create Image flowable. 
+                img = Image(img_buffer, width=6*inch, height=3*inch)
+                story.append(img)
+                story.append(Spacer(1, 0.2 * inch))
+            except Exception as e:
+                print(f"Failed to embed chart: {e}")
 
     story.append(Spacer(1, 0.2 * inch))
     story.append(Paragraph("— AlgoVision AI-Powered Learning Platform —", styles["Normal"]))

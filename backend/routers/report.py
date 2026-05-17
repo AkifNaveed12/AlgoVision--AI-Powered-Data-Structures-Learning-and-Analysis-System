@@ -8,6 +8,11 @@ from backend.services.supabase_service import (
     get_user_attempts, save_report, get_reports, get_report_by_id
 )
 from backend.services.report_service import generate_full_report
+from pydantic import BaseModel
+from typing import Optional, List
+
+class ReportRequest(BaseModel):
+    chart_images: Optional[List[str]] = []
 
 router = APIRouter()
 
@@ -17,7 +22,7 @@ os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
 @router.post("/generate")
-async def generate_report(current_user=Depends(get_current_user)):
+async def generate_report(req: Optional[ReportRequest] = None, current_user=Depends(get_current_user)):
     """Generate a PDF report for the current user."""
     user_id = str(current_user.id)
 
@@ -31,8 +36,10 @@ async def generate_report(current_user=Depends(get_current_user)):
         "full_name": profile.get("full_name", ""),
     }
 
+    charts = req.chart_images if req and req.chart_images else []
+
     # Generate PDF bytes
-    pdf_bytes = generate_full_report(user_data, runs, attempts)
+    pdf_bytes = generate_full_report(user_data, runs, attempts, charts)
 
     # Save to disk
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
