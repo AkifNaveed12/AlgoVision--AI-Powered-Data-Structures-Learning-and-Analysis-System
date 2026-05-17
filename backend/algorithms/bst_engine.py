@@ -144,6 +144,17 @@ def bst_insert(values: List[int], new_value: int) -> dict:
     # Traverse to find insertion point
     op_count = 0
     current = root
+    
+    if current is None:
+        op_count += 1
+        new_id = make_id()
+        root = BSTNode(new_value, new_id)
+        nodes, edges = _serialize_tree(root)
+        states.append(_make_tree_state(
+            nodes, edges, new_id, "insert",
+            f"Inserted {new_value} as root"
+        ))
+    
     while current is not None:
         op_count += 1
         nodes, edges = _serialize_tree(root)

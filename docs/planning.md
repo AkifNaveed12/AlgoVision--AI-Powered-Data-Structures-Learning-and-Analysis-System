@@ -1375,63 +1375,15 @@ git push origin feature-akif
 **File: `backend/services/compiler_service.py`**
 
 ```python
-import httpx
-import base64
 import asyncio
-from backend.config import settings
-
-HEADERS = {
-    "Content-Type": "application/json",
-    "X-RapidAPI-Key": settings.COMPILER_API_KEY,
-    "X-RapidAPI-Host": settings.COMPILER_HOST,
-}
+import base64
 
 async def execute_code(source_code: str, language_id: int, stdin: str = "") -> dict:
-    # Step 1: Submit
-    encoded_source = base64.b64encode(source_code.encode()).decode()
-    encoded_stdin = base64.b64encode(stdin.encode()).decode()
-
-    async with httpx.AsyncClient() as client:
-        submit_res = await client.post(
-            f"{settings.COMPILER_API_URL}/submissions",
-            headers=HEADERS,
-            params={"base64_encoded": "true", "wait": "false"},
-            json={"source_code": encoded_source, "language_id": language_id, "stdin": encoded_stdin},
-            timeout=10
-        )
-        token = submit_res.json()["token"]
-
-        # Step 2: Poll
-        for _ in range(10):
-            await asyncio.sleep(1)
-            poll_res = await client.get(
-                f"{settings.COMPILER_API_URL}/submissions/{token}",
-                headers=HEADERS,
-                params={"base64_encoded": "true", "fields": "stdout,stderr,status,time,memory,compile_output"},
-                timeout=10
-            )
-            data = poll_res.json()
-            status_id = data["status"]["id"]
-
-            if status_id not in [1, 2]:  # Not In Queue and not Processing
-                return _decode_result(data)
-
-        return {"status": "Timeout", "stdout": None, "stderr": "Execution timed out after 10s"}
-
-def _decode_result(data: dict) -> dict:
-    def decode(val):
-        if val is None: return None
-        try: return base64.b64decode(val).decode('utf-8')
-        except: return val
-
-    return {
-        "stdout": decode(data.get("stdout")),
-        "stderr": decode(data.get("stderr")),
-        "compile_output": decode(data.get("compile_output")),
-        "status": data["status"]["description"],
-        "time": data.get("time"),
-        "memory": data.get("memory"),
-    }
+    # Uses local subprocess code execution engine instead of external Judge0 API
+    # 1. Writes source to a temporary file
+    # 2. Uses asyncio.create_subprocess_exec to compile and run
+    # 3. Returns execution results dict
+    pass
 ```
 
 ---
@@ -2440,7 +2392,7 @@ VITE_API_BASE_URL=http://localhost:8000
 
 #### Known Limitations / Tech Debt
 
-- [Anything deferred to a later version]
+- [V4 Cloud Deployment and Polish]
 
 ---
 ```

@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routers import auth, array, linkedlist, ai_tutor, compiler, practice, performance, report
-from backend.routers import bst, graph, sorting
+from backend.routers import bst, graph, sorting, avl
 
 app = FastAPI(
     title="AlgoVision API",
@@ -33,6 +33,7 @@ app.include_router(report.router, prefix="/report", tags=["Report"])
 
 # ── V2: Trees & Graphs ──────────────────────────────────────────────────────
 app.include_router(bst.router, prefix="/bst", tags=["BST"])
+app.include_router(avl.router, prefix="/avl", tags=["AVL"])
 app.include_router(graph.router, prefix="/graph", tags=["Graph"])
 
 # ── V3: Sorting & Searching ─────────────────────────────────────────────────

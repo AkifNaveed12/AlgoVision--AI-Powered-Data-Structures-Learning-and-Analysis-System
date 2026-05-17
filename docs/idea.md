@@ -1283,13 +1283,13 @@ chore(db): add missing index on algorithm_runs
 
 ---
 
-### 🔮 Version 2 — Trees & Graphs
+### ✅ Version 2 — Trees & Graphs (Completed)
 
 - BST (insert, delete, search, traversals)
 - AVL tree with rotations visualized
 - Graph BFS and DFS
 
-### 🔮 Version 3 — Sorting & Searching
+### ✅ Version 3 — Sorting & Searching (Completed)
 
 - Bubble, Selection, Insertion, Merge, Quick Sort
 - Binary Search with visualization

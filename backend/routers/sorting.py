@@ -107,23 +107,29 @@ def binary_search_endpoint(req: BinarySearchRequest):
 @router.post("/race")
 def race_endpoint(req: AlgorithmRaceRequest):
     """
-    Algorithm race mode: run multiple sorting algorithms on the same array.
-    Returns performance comparison (no animation states — just metrics).
+    Algorithm Race Mode: run multiple sorting algorithms on the same array.
+    Returns both:
+      - race_results: per-algorithm performance metrics
+      - race_states:  per-algorithm full animation state arrays (for live visualizer)
     """
     try:
         results = {}
+        race_states = {}
         for alg in req.algorithms:
             res = _run_sort(alg, list(req.array))
             results[alg] = {
                 "execution_time_ms": res["performance"]["execution_time_ms"],
-                "memory_usage_kb": res["performance"]["memory_usage_kb"],
-                "operation_count": res["performance"]["operation_count"],
-                "sorted_array": res.get("sorted_array", []),
+                "memory_usage_kb":   res["performance"]["memory_usage_kb"],
+                "operation_count":   res["performance"]["operation_count"],
+                "sorted_array":      res.get("sorted_array", []),
             }
+            race_states[alg] = res.get("states", [])
+
         return {
             "race_results": results,
-            "array_size": len(req.array),
-            "algorithms": req.algorithms,
+            "race_states":  race_states,
+            "array_size":   len(req.array),
+            "algorithms":   req.algorithms,
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
