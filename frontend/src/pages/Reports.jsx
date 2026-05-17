@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import api from '../lib/api'
+import { CompareChart, HistoryLineChart } from '../components/Charts/PerformanceChart'
 
 export default function Reports() {
   const [reports, setReports] = useState([])
   const [loading, setLoading] = useState(false)
   const [initialFetchDone, setInitialFetchDone] = useState(false)
+
+  // Off-screen chart generation state
+  const [offscreenRuns, setOffscreenRuns] = useState(null)
+  const [offscreenCompare, setOffscreenCompare] = useState(null)
+  const historyChartRef = useRef(null)
+  const compareTimeChartRef = useRef(null)
+  const compareMemChartRef = useRef(null)
 
   const fetchReports = async () => {
     try {
@@ -24,7 +32,24 @@ export default function Reports() {
   const handleGenerate = async () => {
     setLoading(true)
     try {
-      const res = await api.post('/report/generate')
+      // 1. Fetch data required for the charts
+      const historyRes = await api.get('/performance/history')
+      const compareRes = await api.get('/performance/compare?algorithms=array_search,linkedlist_search')
+      
+      setOffscreenRuns(historyRes.data.runs)
+      setOffscreenCompare(compareRes.data.comparison)
+      
+      // 2. Wait for React to render the off-screen charts
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      // 3. Capture Base64 images
+      const chart_images = []
+      if (historyChartRef.current) chart_images.push(historyChartRef.current.toBase64Image())
+      if (compareTimeChartRef.current) chart_images.push(compareTimeChartRef.current.toBase64Image())
+      if (compareMemChartRef.current) chart_images.push(compareMemChartRef.current.toBase64Image())
+
+      // 4. Send to backend
+      const res = await api.post('/report/generate', { chart_images })
       await fetchReports()
       
       // Auto download
@@ -128,6 +153,17 @@ export default function Reports() {
               </div>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Hidden container for PDF chart generation */}
+      <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', width: '800px', opacity: 0, pointerEvents: 'none' }}>
+        {offscreenRuns && <HistoryLineChart chartRef={historyChartRef} runs={offscreenRuns} disableAnimation={true} />}
+        {offscreenCompare && (
+          <>
+            <CompareChart chartRef={compareTimeChartRef} data={offscreenCompare} metric="avg_time_ms" title="Avg Time (ms)" disableAnimation={true} />
+            <CompareChart chartRef={compareMemChartRef} data={offscreenCompare} metric="avg_memory_kb" title="Avg Memory (KB)" disableAnimation={true} />
+          </>
         )}
       </div>
     </div>
