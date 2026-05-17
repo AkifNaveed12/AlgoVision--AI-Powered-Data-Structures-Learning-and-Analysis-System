@@ -9,7 +9,7 @@ supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 # ─── Auth Helpers ────────────────────────────────────────────────────────────
 
-def verify_token(token: str) -> dict:
+async def verify_token(token: str) -> dict:
     """Verify Supabase JWT and return user object."""
     try:
         user = supabase.auth.get_user(token)
@@ -20,12 +20,12 @@ def verify_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 
-def get_current_user(authorization: str = Header(...)) -> dict:
+async def get_current_user(authorization: str = Header(...)) -> dict:
     """FastAPI dependency: extracts and verifies Bearer token."""
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authorization header must start with Bearer")
     token = authorization[7:]
-    return verify_token(token)
+    return await verify_token(token)
 
 
 # ─── User Profile ─────────────────────────────────────────────────────────────

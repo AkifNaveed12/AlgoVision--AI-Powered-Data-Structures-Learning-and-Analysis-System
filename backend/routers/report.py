@@ -22,7 +22,7 @@ os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
 @router.post("/generate")
-def generate_report(req: Optional[ReportRequest] = None, current_user=Depends(get_current_user)):
+async def generate_report(req: Optional[ReportRequest] = None, current_user=Depends(get_current_user)):
     """Generate a PDF report for the current user."""
     user_id = str(current_user.id)
 
@@ -61,7 +61,7 @@ def generate_report(req: Optional[ReportRequest] = None, current_user=Depends(ge
 
 
 @router.get("/download/{report_id}")
-def download_report(report_id: int, current_user=Depends(get_current_user)):
+async def download_report(report_id: int, current_user=Depends(get_current_user)):
     """Download a specific PDF report (protected — only own reports)."""
     record = get_report_by_id(report_id)
     if not record:
@@ -84,7 +84,7 @@ def download_report(report_id: int, current_user=Depends(get_current_user)):
 
 
 @router.get("/list")
-def list_reports(current_user=Depends(get_current_user)):
+async def list_reports(current_user=Depends(get_current_user)):
     """List all reports for the current user."""
     reports = get_reports(str(current_user.id))
     return {"reports": reports}
