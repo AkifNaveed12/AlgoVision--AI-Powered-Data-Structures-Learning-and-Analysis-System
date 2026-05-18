@@ -10,12 +10,24 @@ router = APIRouter()
 async def signup(req: SignupRequest):
     """Register a new user via Supabase Auth."""
     try:
-        # Using admin.create_user because the backend Supabase client is initialized with the Service Role Key
-        res = supabase.auth.admin.create_user({
-            "email": req.email, 
-            "password": req.password,
-            "email_confirm": True # Auto-confirms the email so they can log in instantly
-        })
+        # Try admin.create_user first (requires service role key, auto-confirms)
+        try:
+            res = supabase.auth.admin.create_user({
+                "email": req.email, 
+                "password": req.password,
+                "email_confirm": True
+            })
+        except Exception as e:
+            err_msg = str(e)
+            if "User not allowed" in err_msg or "Admin role required" in err_msg:
+                # Fallback to standard sign_up (works with anon key)
+                res = supabase.auth.sign_up({
+                    "email": req.email,
+                    "password": req.password
+                })
+            else:
+                raise e
+                
         if res.user is None:
             raise HTTPException(status_code=400, detail="Signup failed — email may already be registered")
 
