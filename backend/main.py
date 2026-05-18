@@ -14,18 +14,9 @@ app = FastAPI(
     description="AI-Powered Data Structures Learning & Analysis System",
 )
 
-# Build CORS origins: always include localhost + any CORS_ORIGINS env var entries
-_default_origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://algo-vision-ai-powered-data-structures-learning-and-p3pkh69kc.vercel.app",
-]
-_extra = os.environ.get("CORS_ORIGINS", "")
-_origins = _default_origins + [o.strip() for o in _extra.split(",") if o.strip()]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
