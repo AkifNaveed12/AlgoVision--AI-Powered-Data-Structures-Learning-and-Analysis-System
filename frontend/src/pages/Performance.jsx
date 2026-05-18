@@ -54,7 +54,7 @@ export default function Performance() {
       
       const res = await api.post('/report/generate', { chart_images })
       
-      const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+      const baseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
       const blobRes = await api.get(res.data.download_url, { responseType: 'blob' })
       const url = window.URL.createObjectURL(new Blob([blobRes.data]))
       
