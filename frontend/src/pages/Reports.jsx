@@ -53,7 +53,7 @@ export default function Reports() {
       await fetchReports()
       
       // Auto download
-      const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+      const baseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
       const token = localStorage.getItem('access_token')
       
       const link = document.createElement('a')
