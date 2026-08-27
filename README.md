@@ -1,4 +1,4 @@
-<div align="center">
+8<div align="center">
   <img src="./frontend/public/vite.svg" alt="AlgoVision Logo" width="100"/>
   <h1>AlgoVision</h1>
   <p><strong>AI-Powered Data Structures Learning and Analysis System</strong></p>
@@ -81,6 +81,15 @@ This project was built collaboratively in iterative phases.
   - *Contributions:* 
     - **Version 1 (MVP)**: Designed the foundational architecture, established the FastAPI and React scaffolding, built the primary database schema, and delivered a complete working MVP.
     - **Version 4 (Final)**: Implemented advanced gamification (Streaks), integrated the Groq AI Tutor, stabilized the system architecture (preventing event loop deadlocks), implemented off-screen Chart.js PDF generation, and brought the platform to a deployment-ready format.
+
+LinkedIn:
+https://www.linkedin.com/in/akif-naveed-malik30
+
+GitHub:
+https://github.com/AkifNaveed12
+
+Portfolio:
+https://portfolio-muhammad-akif-naveed.vercel.app/
 
 - **Ruman**
   - *Roles:* Compilation Logic, DevOps, Deployment, V1/V3 Integration.
