@@ -2,104 +2,307 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — AlgoVision Design System
+   ═══════════════════════════════════════════════════════════ */
 @layer base {
   :root {
-    --bg-primary: #0a0f1e;
-    --bg-secondary: #0f172a;
-    --bg-card: #1e293b;
-    --border: #334155;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --accent: #3b82f6;
-    --accent-glow: rgba(59, 130, 246, 0.3);
+    /* Light theme tokens (landing / marketing) */
+    --color-canvas:         #f8f9fa;
+    --color-surface:        #FFFFFF;
+    --color-heading:        #252422;
+    --color-accent:         #eb5e28;
+    --color-text-primary:   #252422;
+    --color-text-secondary: #64748B;
+    --color-text-tertiary:  #94A3B8;
+    --color-brand:          #eb5e28;
+    --color-brand-hover:    #d44d18;
+    --color-teal:           #0F766E;
+    --color-amber:          #D97706;
+    --color-border:         #E5E7EB;
+    --color-border-strong:  #D1D5DB;
+
+    /* Dark workspace tokens (authenticated app) */
+    --color-ws-bg:          #101827;
+    --color-ws-surface:     #1B293B;
+    --color-ws-surface-2:   #243044;
+    --color-ws-border:      #243044;
+    --color-ws-text:        #F1F5F9;
+    --color-ws-muted:       #94A3B8;
+    --color-ws-accent:      #38BDF8;
+    --color-ws-accent-dim:  rgba(56, 189, 248, 0.15);
+
+    /* Legacy compatibility */
+    --bg-primary:   #101827;
+    --bg-secondary: #1B293B;
+    --bg-card:      #1B293B;
+    --border:       #243044;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --accent:       #eb5e28;
+    --accent-glow:  rgba(235, 94, 40, 0.25);
+
+    /* Radius tokens */
+    --radius-sm:  4px;
+    --radius-md:  8px;
+    --radius-lg:  12px;
+    --radius-xl:  16px;
+    --radius-2xl: 24px;
+
+    /* Shadow tokens */
+    --shadow-card:    0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-card-lg: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-orange:  0 4px 20px rgba(235, 94, 40, 0.3);
   }
 
   * {
     box-sizing: border-box;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply font-sans;
+    font-family: 'Inter', system-ui, sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  /* Headings use Manrope display font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', system-ui, sans-serif;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
-  ::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
+  /* Code elements use JetBrains Mono */
+  code, pre, kbd, samp, .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
 
-  ::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+  /* Focus ring — accessible */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   COMPONENT LAYER — Reusable Design Primitives
+   ═══════════════════════════════════════════════════════════ */
 @layer components {
+
+  /* ── Cards ─────────────────────────────────────────── */
   .card {
-    @apply bg-slate-800 border border-slate-700 rounded-xl p-6;
+    @apply bg-[#1B293B] border border-[#243044] rounded-xl p-6;
+    box-shadow: var(--shadow-card);
   }
 
+  .card-light {
+    @apply bg-white border border-[#E5E7EB] rounded-xl p-6;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ── Buttons ────────────────────────────────────────── */
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-lg
-           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply inline-flex items-center justify-center gap-2
+           bg-[#eb5e28] hover:bg-[#d44d18] active:bg-[#b83e12]
+           text-white font-semibold
+           px-5 py-2.5 rounded-lg
+           transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed
+           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-[#eb5e28] focus-visible:ring-offset-2
+           focus-visible:ring-offset-[#101827];
   }
 
   .btn-secondary {
-    @apply bg-slate-700 hover:bg-slate-600 text-slate-100 font-medium px-5 py-2.5 rounded-lg
-           transition-all duration-200 border border-slate-600;
+    @apply inline-flex items-center justify-center gap-2
+           bg-[#243044] hover:bg-[#2D3D57] active:bg-[#1B293B]
+           text-[#F1F5F9] font-medium
+           px-5 py-2.5 rounded-lg
+           border border-[#334155]
+           transition-all duration-200
+           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-[#eb5e28] focus-visible:ring-offset-2
+           focus-visible:ring-offset-[#101827];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1B293B]
+           font-medium px-4 py-2 rounded-lg
+           transition-all duration-200;
   }
 
   .btn-danger {
-    @apply bg-red-600 hover:bg-red-500 text-white font-semibold px-5 py-2.5 rounded-lg
-           transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2
+           bg-red-600 hover:bg-red-500 text-white font-semibold
+           px-5 py-2.5 rounded-lg transition-all duration-200;
   }
 
   .btn-success {
-    @apply bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-5 py-2.5 rounded-lg
-           transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2
+           bg-emerald-600 hover:bg-emerald-500 text-white font-semibold
+           px-5 py-2.5 rounded-lg transition-all duration-200;
   }
 
+  /* Landing page CTA button */
+  .btn-cta {
+    @apply inline-flex items-center justify-center gap-2
+           bg-[#eb5e28] hover:bg-[#d44d18] active:scale-[0.98]
+           text-white font-semibold text-base
+           px-7 py-3.5 rounded-lg
+           transition-all duration-200 shadow-lg;
+    box-shadow: 0 4px 20px rgba(235, 94, 40, 0.3);
+  }
+
+  .btn-cta-outline {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white hover:bg-[#f1f2f4]
+           text-[#252422] font-semibold text-base
+           px-7 py-3.5 rounded-lg
+           border border-[#E5E7EB] hover:border-[#D1D5DB]
+           transition-all duration-200 shadow-sm;
+  }
+
+  /* ── Form Elements ──────────────────────────────────── */
   .input-field {
-    @apply w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2.5 text-slate-100
-           placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    @apply w-full bg-[#101827] border border-[#334155] rounded-lg
+           px-4 py-2.5 text-[#F1F5F9]
+           placeholder-[#475569]
+           focus:outline-none focus:ring-2 focus:ring-[#eb5e28]
+           focus:border-transparent
            transition-all duration-200;
+    font-size: 0.9375rem;
   }
 
+  .input-label {
+    @apply block text-sm font-medium text-[#94A3B8] mb-1.5;
+  }
+
+  /* ── Badges ─────────────────────────────────────────── */
   .badge-easy {
-    @apply bg-emerald-900/50 text-emerald-400 border border-emerald-700 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply bg-emerald-900/50 text-emerald-400 border border-emerald-700
+           px-2.5 py-0.5 rounded-full text-xs font-semibold;
   }
 
   .badge-medium {
-    @apply bg-yellow-900/50 text-yellow-400 border border-yellow-700 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply bg-yellow-900/50 text-yellow-400 border border-yellow-700
+           px-2.5 py-0.5 rounded-full text-xs font-semibold;
   }
 
   .badge-hard {
-    @apply bg-red-900/50 text-red-400 border border-red-700 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    @apply bg-red-900/50 text-red-400 border border-red-700
+           px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  /* ── Landing Section Primitives ─────────────────────── */
+  .section-label {
+    @apply inline-flex items-center gap-2
+           bg-[#eb5e28]/10 border border-[#eb5e28]/25
+           text-[#eb5e28] text-sm font-medium
+           px-4 py-1.5 rounded-full mb-6;
+  }
+
+  .section-heading {
+    font-family: 'Manrope', system-ui, sans-serif;
+    @apply text-3xl sm:text-4xl font-black text-[#252422] mb-4;
+    letter-spacing: -0.025em;
+  }
+
+  .section-subheading {
+    @apply text-[#64748B] text-lg leading-relaxed;
+  }
+
+  /* ── Feature Cards (landing) ─────────────────────────── */
+  .feature-card {
+    @apply relative bg-white border border-[#E5E7EB] rounded-xl p-6
+           hover:border-[#eb5e28]/40 hover:-translate-y-0.5
+           transition-all duration-300 cursor-pointer overflow-hidden shadow-sm hover:shadow-md;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top left, rgba(235,94,40,0.04), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+
+  /* ── Icon containers ─────────────────────────────────── */
+  .icon-container {
+    @apply w-11 h-11 rounded-lg flex items-center justify-center;
+  }
+
+  /* ── Color accent text (replaces purple gradient) ───── */
+  .gradient-text {
+    @apply text-[#eb5e28];
+  }
+
+  .heading-brand {
+    @apply text-[#252422];
+  }
+
+  .heading-accent {
+    @apply text-[#eb5e28];
+  }
+
+  /* ── Glow effects ────────────────────────────────────── */
+  .glow-orange {
+    box-shadow: 0 0 24px rgba(235, 94, 40, 0.3);
   }
 
   .glow-blue {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 24px rgba(36, 87, 214, 0.3);
   }
 
-  .glow-purple {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent;
+  /* ── Step indicator ──────────────────────────────────── */
+  .step-number {
+    @apply text-[#eb5e28] text-xs font-mono font-bold tracking-widest;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY LAYER — Custom Utilities
+   ═══════════════════════════════════════════════════════════ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .content-auto {
+    content-visibility: auto;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VISUALIZER ANIMATIONS
+   ═══════════════════════════════════════════════════════════ */
 
 /* Array box animations */
 .array-box {
@@ -126,12 +329,41 @@
   animation: fadeIn 0.3s ease forwards;
 }
 
+/* Slide up entrance */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease forwards;
+}
+
+/* Stagger delays for section entrance animations */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
 /* Pulse glow for active elements */
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 8px rgba(59,130,246,0.4); }
-  50%       { box-shadow: 0 0 20px rgba(59,130,246,0.8); }
+  0%, 100% { box-shadow: 0 0 8px rgba(235,94,40,0.4); }
+  50%       { box-shadow: 0 0 24px rgba(235,94,40,0.7); }
 }
 
 .pulse-glow {
-  animation: pulseGlow 1.5s ease-in-out infinite;
+  animation: pulseGlow 1.8s ease-in-out infinite;
+}
+
+/* Code block styling */
+.code-block {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  background: #0d1526;
+  border: 1px solid #243044;
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
 }

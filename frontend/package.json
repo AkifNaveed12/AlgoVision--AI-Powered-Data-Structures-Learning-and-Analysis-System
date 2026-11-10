@@ -10,13 +10,17 @@
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.23.1",
-    "axios": "^1.7.2",
+    "@hookform/resolvers": "^7.0.5",
     "@supabase/supabase-js": "^2.43.4",
+    "axios": "^1.7.2",
     "chart.js": "^4.4.3",
-    "react-chartjs-2": "^5.2.0"
+    "lucide-react": "^1.71.0",
+    "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.91.0",
+    "react-router-dom": "^6.23.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
