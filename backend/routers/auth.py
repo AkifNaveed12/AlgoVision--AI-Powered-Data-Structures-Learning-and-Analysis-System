@@ -11,24 +11,28 @@ async def signup(req: SignupRequest):
     """Register a new user via Supabase Auth."""
     try:
         # Try admin.create_user first (requires service role key, auto-confirms)
+        res = None
+        admin_succeeded = False
         try:
             res = supabase.auth.admin.create_user({
-                "email": req.email, 
+                "email": req.email,
                 "password": req.password,
                 "email_confirm": True
             })
-        except Exception as e:
-            err_msg = str(e)
-            if "User not allowed" in err_msg or "Admin role required" in err_msg:
-                # Fallback to standard sign_up (works with anon key)
-                res = supabase.auth.sign_up({
-                    "email": req.email,
-                    "password": req.password
-                })
-            else:
-                raise e
-                
-        if res.user is None:
+            if res.user:
+                admin_succeeded = True
+        except Exception as admin_err:
+            # Fall back to standard sign_up for any admin API failure
+            pass
+
+        if not admin_succeeded:
+            # Standard sign_up — may require email confirmation depending on project settings
+            res = supabase.auth.sign_up({
+                "email": req.email,
+                "password": req.password
+            })
+
+        if res is None or res.user is None:
             raise HTTPException(status_code=400, detail="Signup failed — email may already be registered")
 
         user_id = str(res.user.id)

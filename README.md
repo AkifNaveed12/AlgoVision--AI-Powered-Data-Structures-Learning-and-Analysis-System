@@ -30,13 +30,16 @@ AlgoVision is an advanced, interactive educational platform designed to make lea
 ## 🚀 Running the Project
 
 ### Prerequisites
+
 - Node.js (v18+)
 - Python (3.10+)
 - Supabase Account
 - Groq API Key
 
 ### 1. Environment Setup
+
 Create a `.env` file in the root directory:
+
 ```env
 GROQ_API_KEY=your_groq_api_key
 SUPABASE_URL=your_supabase_url
@@ -44,7 +47,9 @@ SUPABASE_KEY=your_supabase_service_role_key
 ```
 
 ### 2. Backend Setup
+
 Navigate to the root directory and activate your virtual environment, then install dependencies:
+
 ```bash
 cd backend
 python -m venv .venv
@@ -54,40 +59,45 @@ pip install -r requirements.txt
 ```
 
 Run the FastAPI backend:
+
 ```bash
 uvicorn backend.main:app --reload
 # Or run the included script: .\start_backend.ps1
 ```
 
 ### 3. Frontend Setup
+
 Open a new terminal and navigate to the frontend directory:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
 The application will be running at `http://localhost:5173`.
 
 ---
 
 ## 📜 Version History & Contributions
 
-This project was built collaboratively in iterative phases. 
+This project was built collaboratively in iterative phases.
 
 ### Contributions
 
 - **Akif (Team Lead)**
+
   - *Roles:* System Design, AI Integration, DB Schema Architecture, Core Business Logics, Final Integrations.
-  - *Contributions:* 
+  - *Contributions:*
     - **Version 1 (MVP)**: Designed the foundational architecture, established the FastAPI and React scaffolding, built the primary database schema, and delivered a complete working MVP.
     - **Version 4 (Final)**: Implemented advanced gamification (Streaks), integrated the Groq AI Tutor, stabilized the system architecture (preventing event loop deadlocks), implemented off-screen Chart.js PDF generation, and brought the platform to a deployment-ready format.
-
 - **Ruman**
-  - *Roles:* Compilation Logic, DevOps, Deployment, V1/V3 Integration.
-  - *Contributions:* 
-    - **Version 2**: Spearheaded the integration of the Python subprocess library for local code compilation. Resolved critical compilation pipeline errors, implemented sorting visualizations, and set up Dockerization, containerization, and CI/CD pipelines.
 
+  - *Roles:* Compilation Logic, DevOps, Deployment, V1/V3 Integration.
+  - *Contributions:*
+    - **Version 2**: Spearheaded the integration of the Python subprocess library for local code compilation. Resolved critical compilation pipeline errors, implemented sorting visualizations, and set up Dockerization, containerization, and CI/CD pipelines.
 - **Arslan**
+
   - *Roles:* V3 Implementations, System Integrations.
   - *Contributions:*
     - **Version 3**: Focused on expanding core system capabilities, integrating V1 and V3 modules, and refining data structure logic execution.
@@ -97,6 +107,7 @@ This project was built collaboratively in iterative phases.
 ## 📂 Documentation
 
 Comprehensive technical documentation is available in the `docs/` directory:
+
 - [**Product Requirements Document (PRD)**](./docs/prd.md)
 - [**Database Schema**](./docs/schema.md)
 - [**Architecture Diagram**](./docs/diagrams/architecture.md)
